@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nf147.seer.dao.ImgpathMapper">
+  <resultMap id="BaseResultMap" type="com.nf147.seer.entity.Imgpath">
+    <id column="img_id" jdbcType="INTEGER" property="imgId" />
+    <result column="img_path" jdbcType="VARCHAR" property="imgPath" />
+    <result column="img_user_id" jdbcType="INTEGER" property="imgUserId" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from seer_imgpath
+    where img_id = #{imgId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.nf147.seer.entity.Imgpath">
+    insert into seer_imgpath (img_id, img_path, img_user_id
+      )
+    values (#{imgId,jdbcType=INTEGER}, #{imgPath,jdbcType=VARCHAR}, #{imgUserId,jdbcType=INTEGER}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.nf147.seer.entity.Imgpath">
+    update seer_imgpath
+    set img_path = #{imgPath,jdbcType=VARCHAR},
+      img_user_id = #{imgUserId,jdbcType=INTEGER}
+    where img_id = #{imgId,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select img_id, img_path, img_user_id
+    from seer_imgpath
+    where img_id = #{imgId,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select img_id, img_path, img_user_id
+    from seer_imgpath
+  </select>
+</mapper>

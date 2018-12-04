@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nf147.seer.dao.ReplypraiseMapper">
+  <resultMap id="BaseResultMap" type="com.nf147.seer.entity.Replypraise">
+    <id column="praise_id" jdbcType="INTEGER" property="praiseId" />
+    <result column="praise_reply_id" jdbcType="INTEGER" property="praiseReplyId" />
+    <result column="praise_user_id" jdbcType="INTEGER" property="praiseUserId" />
+    <result column="praise_time" jdbcType="TIMESTAMP" property="praiseTime" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from seer_reply_praise
+    where praise_id = #{praiseId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.nf147.seer.entity.Replypraise">
+    insert into seer_reply_praise (praise_id, praise_reply_id, praise_user_id, 
+      praise_time)
+    values (#{praiseId,jdbcType=INTEGER}, #{praiseReplyId,jdbcType=INTEGER}, #{praiseUserId,jdbcType=INTEGER}, 
+      #{praiseTime,jdbcType=TIMESTAMP})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.nf147.seer.entity.Replypraise">
+    update seer_reply_praise
+    set praise_reply_id = #{praiseReplyId,jdbcType=INTEGER},
+      praise_user_id = #{praiseUserId,jdbcType=INTEGER},
+      praise_time = #{praiseTime,jdbcType=TIMESTAMP}
+    where praise_id = #{praiseId,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select praise_id, praise_reply_id, praise_user_id, praise_time
+    from seer_reply_praise
+    where praise_id = #{praiseId,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select praise_id, praise_reply_id, praise_user_id, praise_time
+    from seer_reply_praise
+  </select>
+</mapper>
