@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nf147.prophet.dao.InterestfollowMapper">
+  <resultMap id="BaseResultMap" type="com.nf147.prophet.entity.Interestfollow">
+    <id column="follow_id" jdbcType="INTEGER" property="followId" />
+    <result column="follow_interest_id" jdbcType="INTEGER" property="followInterestId" />
+    <result column="follow_user_id" jdbcType="INTEGER" property="followUserId" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from seer_interest_follow
+    where follow_id = #{followId,jdbcType=INTEGER}
+  </delete>
+    <delete id="deleteByInterestIdAndUserId">
+      delete from seer_interest_follow
+    where follow_interest_id = #{interId,jdbcType=INTEGER}
+    and follow_user_id = #{userId,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.nf147.prophet.entity.Interestfollow">
+    insert into seer_interest_follow (follow_id, follow_interest_id, follow_user_id
+      )
+    values (#{followId,jdbcType=INTEGER}, #{followInterestId,jdbcType=INTEGER}, #{followUserId,jdbcType=INTEGER}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.nf147.prophet.entity.Interestfollow">
+    update seer_interest_follow
+    set follow_interest_id = #{followInterestId,jdbcType=INTEGER},
+      follow_user_id = #{followUserId,jdbcType=INTEGER}
+    where follow_id = #{followId,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select follow_id, follow_interest_id, follow_user_id
+    from seer_interest_follow
+    where follow_id = #{followId,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select follow_id, follow_interest_id, follow_user_id
+    from seer_interest_follow
+  </select>
+    <select id="userWhetherFollowInterest" resultType="com.nf147.prophet.entity.Interestfollow">
+      select follow_id, follow_interest_id, follow_user_id
+      from seer_interest_follow
+      where follow_interest_id = #{interId,jdbcType=INTEGER}
+      and follow_user_id = #{userId,jdbcType=INTEGER}
+    </select>
+  <select id="selectInterestFollowNumber" resultType="java.lang.Integer">
+      select count(*)
+      from seer_interest_follow
+      where follow_interest_id = #{interId,jdbcType=INTEGER}
+  </select>
+    <select id="selectUserFollows" resultMap="BaseResultMap">
+      select follow_id, follow_interest_id, follow_user_id
+    from seer_interest_follow
+    where follow_user_id = #{userId,jdbcType=INTEGER}
+    </select>
+</mapper>

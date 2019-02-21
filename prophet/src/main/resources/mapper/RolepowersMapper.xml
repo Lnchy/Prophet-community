@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nf147.prophet.dao.RolepowersMapper">
+  <resultMap id="BaseResultMap" type="com.nf147.prophet.entity.Rolepowers">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="role_id" jdbcType="INTEGER" property="roleId" />
+    <result column="power_id" jdbcType="INTEGER" property="powerId" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from seer_role_powers
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.nf147.prophet.entity.Rolepowers">
+    insert into seer_role_powers (role_id, power_id
+      )
+    values (#{roleId,jdbcType=INTEGER}, #{powerId,jdbcType=INTEGER}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.nf147.prophet.entity.Rolepowers">
+    update seer_role_powers
+    set role_id = #{roleId,jdbcType=INTEGER},
+      power_id = #{powerId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, role_id, power_id
+    from seer_role_powers
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, role_id, power_id
+    from seer_role_powers
+  </select>
+    <select id="selectByRoleIdAndPowerId" resultType="com.nf147.prophet.entity.Rolepowers">
+      select id, role_id, power_id
+    from seer_role_powers
+    where role_id = #{roleId} and power_id = #{powerId}
+    </select>
+</mapper>

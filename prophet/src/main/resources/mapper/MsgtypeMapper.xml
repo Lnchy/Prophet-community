@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nf147.prophet.dao.MsgtypeMapper">
+  <resultMap id="BaseResultMap" type="com.nf147.prophet.entity.Msgtype">
+    <id column="msg_type_id" jdbcType="INTEGER" property="msgTypeId" />
+    <result column="msg_type_name" jdbcType="VARCHAR" property="msgTypeName" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from seer_msg_type
+    where msg_type_id = #{msgTypeId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.nf147.prophet.entity.Msgtype">
+    insert into seer_msg_type (msg_type_id, msg_type_name)
+    values (#{msgTypeId,jdbcType=INTEGER}, #{msgTypeName,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.nf147.prophet.entity.Msgtype">
+    update seer_msg_type
+    set msg_type_name = #{msgTypeName,jdbcType=VARCHAR}
+    where msg_type_id = #{msgTypeId,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select msg_type_id, msg_type_name
+    from seer_msg_type
+    where msg_type_id = #{msgTypeId,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select msg_type_id, msg_type_name
+    from seer_msg_type
+  </select>
+</mapper>
