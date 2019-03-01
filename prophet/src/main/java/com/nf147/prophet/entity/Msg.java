@@ -1,5 +1,7 @@
 package com.nf147.prophet.entity;
 
+import java.util.Date;
+
 public class Msg {
     private Integer msgId;
 
@@ -7,7 +9,7 @@ public class Msg {
 
     private Integer msgUserAcceptId;
 
-    private Integer msgTime;
+    private Date msgTime;
 
     private String msgContent;
 
@@ -35,11 +37,11 @@ public class Msg {
         this.msgUserAcceptId = msgUserAcceptId;
     }
 
-    public Integer getMsgTime() {
+    public Date getMsgTime() {
         return msgTime;
     }
 
-    public void setMsgTime(Integer msgTime) {
+    public void setMsgTime(Date msgTime) {
         this.msgTime = msgTime;
     }
 

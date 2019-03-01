@@ -77,21 +77,27 @@ public class UserController {
         return result;
     }
 
-    //更改资料
-    @PostMapping("/changeInfo")
+
+    //更改背景图片
+    @PostMapping("/changeBgImg")
     @NeedLogin
-    public Result changeUserInfo(User user, HttpSession session) {
+    public Result changeBgImg(@RequestParam("img") MultipartFile ufile, HttpSession session) {
+        //获取id
         int userId = (int) session.getAttribute("userId");
+        Result result = userService.upLoadImage(ufile, userId);
 
-        return userService.upUserInfo(user);
+        if (result.isResultStatus()) {
+            String path = (String) result.getData();
+            if (userService.changeBackgroundImg(userId, path)) {
+                return Result.status(true).msg("更改成功");
+            } else {
+                return Result.status(false).code(500).msg("更新失败");
+            }
+        } else {
+            return result;
+        }
     }
 
-    //上传图片
-    @PostMapping("/upLoadImage")
-    @NeedLogin
-    public Result upLoadImage(@RequestParam("img") MultipartFile ufile, HttpServletRequest req) {
-        return userService.upLoadImage(ufile, req);
-    }
 
     //获取自己的所有信息
     @GetMapping("/aboutMe")
@@ -100,6 +106,12 @@ public class UserController {
     public Result aboutMe(HttpSession session) {
         int userId = (int) session.getAttribute("userId");
 
+        return userService.getUserInfoById(userId);
+    }
+
+    @GetMapping("/info/{userId}")
+    @NeedLogin
+    public Result userInfo(@PathVariable("userId") int userId) {
         return userService.getUserInfoById(userId);
     }
 

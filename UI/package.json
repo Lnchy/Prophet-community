@@ -10,6 +10,8 @@
   "dependencies": {
     "iview": "^3.0.1",
     "vue": "^2.5.22",
+    "vue-markdown": "^2.2.4",
+    "vue-meditor": "^0.9.3",
     "vue-router": "^3.0.1"
   },
   "devDependencies": {

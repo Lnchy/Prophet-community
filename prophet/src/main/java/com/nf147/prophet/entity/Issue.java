@@ -1,5 +1,7 @@
 package com.nf147.prophet.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.util.Date;
 
 public class Issue {
@@ -13,11 +15,18 @@ public class Issue {
 
     private Byte issueAnonymous;
 
-    private Date issueTime;
+    private Byte issueEssence;
+
+    private Byte issueBan;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date issueCreateTime;
 
     private Integer issueReply;
 
     private Integer issueViews;
+
+    private String issueContent;
 
     public Integer getIssueId() {
         return issueId;
@@ -44,6 +53,9 @@ public class Issue {
     }
 
     public Integer getIssueUserId() {
+        if (issueAnonymous == 1) {
+            return null;
+        }
         return issueUserId;
     }
 
@@ -59,12 +71,28 @@ public class Issue {
         this.issueAnonymous = issueAnonymous;
     }
 
-    public Date getIssueTime() {
-        return issueTime;
+    public Byte getIssueEssence() {
+        return issueEssence;
     }
 
-    public void setIssueTime(Date issueTime) {
-        this.issueTime = issueTime;
+    public void setIssueEssence(Byte issueEssence) {
+        this.issueEssence = issueEssence;
+    }
+
+    public Byte getIssueBan() {
+        return issueBan;
+    }
+
+    public void setIssueBan(Byte issueBan) {
+        this.issueBan = issueBan;
+    }
+
+    public Date getIssueCreateTime() {
+        return issueCreateTime;
+    }
+
+    public void setIssueCreateTime(Date issueCreateTime) {
+        this.issueCreateTime = issueCreateTime;
     }
 
     public Integer getIssueReply() {
@@ -81,5 +109,13 @@ public class Issue {
 
     public void setIssueViews(Integer issueViews) {
         this.issueViews = issueViews;
+    }
+
+    public String getIssueContent() {
+        return issueContent;
+    }
+
+    public void setIssueContent(String issueContent) {
+        this.issueContent = issueContent == null ? null : issueContent.trim();
     }
 }

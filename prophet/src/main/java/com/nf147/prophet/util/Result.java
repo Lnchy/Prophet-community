@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 
 /**
  * 返回类
+ *
  * @param <T>
  */
 public class Result<T> {
@@ -12,8 +13,15 @@ public class Result<T> {
     private int statusCode;
     private String statusMsg;
     private T data;
-    private Page<T> page;
+    private PageHelp pageHelp;
 
+    public PageHelp getPageHelp() {
+        return pageHelp;
+    }
+
+    public void setPageHelp(PageHelp pageHelp) {
+        this.pageHelp = pageHelp;
+    }
 
     public boolean isResultStatus() {
         return resultStatus;
@@ -47,15 +55,8 @@ public class Result<T> {
         this.data = data;
     }
 
-    public Page<T> getPage() {
-        return page;
-    }
 
-    public void setPage(Page<T> page) {
-        this.page = page;
-    }
-
-    public static<T> Result<T> status(boolean status) {
+    public static <T> Result<T> status(boolean status) {
         Result<T> result = new Result<T>();
         result.setResultStatus(status);
         result.setStatusCode(status ? 200 : 500);
@@ -77,8 +78,8 @@ public class Result<T> {
         return this;
     }
 
-    public Result<T> page(Page<T> page) {
-        this.page = page;
+    public Result<T> page(PageHelp pageHelp) {
+        this.pageHelp = pageHelp;
         return this;
     }
 

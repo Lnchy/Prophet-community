@@ -21,6 +21,26 @@ public class Reply {
 
     private String replyContent;
 
+    private int praiseNum;
+
+    private User userInfo;
+
+    public User getUserInfo() {
+        return userInfo;
+    }
+
+    public void setUserInfo(User userInfo) {
+        this.userInfo = userInfo;
+    }
+
+    public int getPraiseNum() {
+        return praiseNum;
+    }
+
+    public void setPraiseNum(int praiseNum) {
+        this.praiseNum = praiseNum;
+    }
+
     public Integer getReplyId() {
         return replyId;
     }

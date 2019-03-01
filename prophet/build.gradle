@@ -33,8 +33,6 @@ dependencies {
     //Mariadb数据库
     compile group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.3.0'
     testImplementation('org.springframework.boot:spring-boot-starter-test')
-    //分页插件
-    compile group: 'com.github.pagehelper', name: 'pagehelper-spring-boot-starter', version: '1.2.3'
     //阿里云连接池
     compile group: 'com.alibaba', name: 'druid', version: '1.1.10'
 }

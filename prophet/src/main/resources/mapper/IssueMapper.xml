@@ -1,48 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.nf147.prophet.dao.IssueMapper">
-  <resultMap id="BaseResultMap" type="com.nf147.prophet.entity.Issue">
-    <id column="issue_id" jdbcType="INTEGER" property="issueId" />
-    <result column="issue_interest_id" jdbcType="INTEGER" property="issueInterestId" />
-    <result column="issue_title" jdbcType="VARCHAR" property="issueTitle" />
-    <result column="issue_user_id" jdbcType="INTEGER" property="issueUserId" />
-    <result column="issue_anonymous" jdbcType="TINYINT" property="issueAnonymous" />
-    <result column="issue_time" jdbcType="TIMESTAMP" property="issueTime" />
-    <result column="issue_reply" jdbcType="INTEGER" property="issueReply" />
-    <result column="issue_views" jdbcType="INTEGER" property="issueViews" />
-  </resultMap>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from seer_issue
-    where issue_id = #{issueId,jdbcType=INTEGER}
-  </delete>
-  <insert id="insert" parameterType="com.nf147.prophet.entity.Issue">
-    insert into seer_issue (issue_id, issue_interest_id, issue_title, 
-      issue_user_id, issue_anonymous, issue_time, 
-      issue_reply, issue_views)
-    values (#{issueId,jdbcType=INTEGER}, #{issueInterestId,jdbcType=INTEGER}, #{issueTitle,jdbcType=VARCHAR}, 
-      #{issueUserId,jdbcType=INTEGER}, #{issueAnonymous,jdbcType=TINYINT}, #{issueTime,jdbcType=TIMESTAMP}, 
-      #{issueReply,jdbcType=INTEGER}, #{issueViews,jdbcType=INTEGER})
-  </insert>
-  <update id="updateByPrimaryKey" parameterType="com.nf147.prophet.entity.Issue">
-    update seer_issue
-    set issue_interest_id = #{issueInterestId,jdbcType=INTEGER},
-      issue_title = #{issueTitle,jdbcType=VARCHAR},
-      issue_user_id = #{issueUserId,jdbcType=INTEGER},
-      issue_anonymous = #{issueAnonymous,jdbcType=TINYINT},
-      issue_time = #{issueTime,jdbcType=TIMESTAMP},
-      issue_reply = #{issueReply,jdbcType=INTEGER},
-      issue_views = #{issueViews,jdbcType=INTEGER}
-    where issue_id = #{issueId,jdbcType=INTEGER}
-  </update>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select issue_id, issue_interest_id, issue_title, issue_user_id, issue_anonymous, 
-    issue_time, issue_reply, issue_views
-    from seer_issue
-    where issue_id = #{issueId,jdbcType=INTEGER}
+    <resultMap id="BaseResultMap" type="com.nf147.prophet.entity.Issue">
+        <id column="issue_id" jdbcType="INTEGER" property="issueId"/>
+        <result column="issue_interest_id" jdbcType="INTEGER" property="issueInterestId"/>
+        <result column="issue_title" jdbcType="VARCHAR" property="issueTitle"/>
+        <result column="issue_user_id" jdbcType="INTEGER" property="issueUserId"/>
+        <result column="issue_anonymous" jdbcType="TINYINT" property="issueAnonymous"/>
+        <result column="issue_essence" jdbcType="TINYINT" property="issueEssence"/>
+        <result column="issue_ban" jdbcType="TINYINT" property="issueBan"/>
+        <result column="issue_create_time" jdbcType="TIMESTAMP" property="issueCreateTime"/>
+        <result column="issue_reply" jdbcType="INTEGER" property="issueReply"/>
+        <result column="issue_views" jdbcType="INTEGER" property="issueViews"/>
+        <result column="issue_content" jdbcType="LONGVARCHAR" property="issueContent"/>
+    </resultMap>
+    <select id="selectAllIssueByinterestId" resultType="com.nf147.prophet.entity.Issue">
+    select * from seer_issue
+    where issue_interest_id = #{interestId}
+    order by issue_views
+    DESC limit #{starNum},#{endNum}
   </select>
-  <select id="selectAll" resultMap="BaseResultMap">
-    select issue_id, issue_interest_id, issue_title, issue_user_id, issue_anonymous, 
-    issue_time, issue_reply, issue_views
-    from seer_issue
+    <select id="getCount" resultType="java.lang.Integer">
+    select count(*) from seer_issue
+    where issue_interest_id = #{interestId}
   </select>
+    <select id="selectUserLove" resultType="com.nf147.prophet.entity.Issue">
+      select * from seer_issue where issue_interest_id
+      in((select follow_interest_id from seer_interest_follow where follow_user_id = #{userId}))
+      order by rand(), issue_anonymous DESC, issue_reply DESC , issue_views DESC limit 10
+    </select>
+    <select id="selectIssueByIssueId" resultType="com.nf147.prophet.entity.Issue">
+        select * from seer_issue where issue_id = #{issueId}
+    </select>
+
 </mapper>

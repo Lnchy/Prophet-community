@@ -1,6 +1,7 @@
 package com.nf147.prophet.dao;
 
 import com.nf147.prophet.entity.User;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -23,4 +24,6 @@ public interface UserMapper {
 
     int changePwd(Integer userId, String newPwd);
 
+    //更改背景图片
+    int changeBgImg(@Param("userId") int userId, @Param("imgPath") String imgPath);
 }

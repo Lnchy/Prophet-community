@@ -1,5 +1,6 @@
 package com.nf147.prophet.service;
 
+import com.nf147.prophet.entity.Interest;
 import com.nf147.prophet.entity.Interestfollow;
 import com.nf147.prophet.util.Result;
 
@@ -43,6 +44,9 @@ public interface InterestService {
     //分类的关注量
     Result usersFollowInterestNumbers(int interestId);
 
-    //获取我关注的分类
-    List<Interestfollow> getUserFollowInterest(int userId);
+    //获取某个用户关注的分类
+    List<Interest> getUserFollowInterest(int userId);
+
+    //获取推荐的分类
+    List<Interest> getRecommendInterest();
 }

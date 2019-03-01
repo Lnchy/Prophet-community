@@ -19,16 +19,16 @@ public interface UserService {
     Result changePwd(String oldPwd, String newPwd, int userId);
 
     //上传图片
-    Result upLoadImage(MultipartFile ufile, HttpServletRequest req);
-
-    //更新用户资料
-    Result upUserInfo(User user);
+    Result upLoadImage(MultipartFile ufile, int userId);
 
     //获取自己所有信息
     Result getUserInfoById(int userId);
 
     //获取行业列表
     Result getIndustrys();
+
+    //更改用户背景图片
+    boolean changeBackgroundImg(int userId, String imgPath);
 
     //判断一个邮箱是否有注册过
     boolean testEmailIsReg(String email);

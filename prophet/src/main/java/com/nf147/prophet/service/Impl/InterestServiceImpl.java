@@ -9,10 +9,12 @@ import com.nf147.prophet.util.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class InterestServiceImpl implements InterestService {
+    //分类列表信息
     @Autowired
     private InterestMapper interestMapper;
 
@@ -147,8 +149,23 @@ public class InterestServiceImpl implements InterestService {
 
     //获取用户关注的分类
     @Override
-    public List<Interestfollow> getUserFollowInterest(int userId) {
-        return interestfollowMapper.selectUserFollows(userId);
+    public List<Interest> getUserFollowInterest(int userId) {
+        List<Interestfollow> interestfollows = interestfollowMapper.selectUserFollows(userId);
+        List<Integer> ids = new ArrayList<>();
+        for (Interestfollow item : interestfollows) {
+            ids.add(item.getFollowInterestId());
+        }
+        if (ids.size() == 0) {
+            return null;
+        } else {
+            return interestMapper.selectInterestByArray(ids);
+        }
+    }
+
+    //获取随机推荐的分类
+    @Override
+    public List<Interest> getRecommendInterest() {
+        return interestMapper.selectRand();
     }
 
 

@@ -1,16 +1,15 @@
 package com.nf147.prophet.dao;
 
 import com.nf147.prophet.entity.Replypraise;
+import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 
 public interface ReplypraiseMapper {
-    int deleteByPrimaryKey(Integer praiseId);
 
     int insert(Replypraise record);
 
-    Replypraise selectByPrimaryKey(Integer praiseId);
+    int deletePraise(@Param("replyId") int replyId, @Param("userId") int userId);
 
-    List<Replypraise> selectAll();
-
-    int updateByPrimaryKey(Replypraise record);
+    int selectPraise(@Param("replyId") int replyId, @Param("userId") int userId);
 }

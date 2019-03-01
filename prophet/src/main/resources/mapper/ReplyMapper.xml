@@ -1,52 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.nf147.prophet.dao.ReplyMapper">
-  <resultMap id="BaseResultMap" type="com.nf147.prophet.entity.Reply">
-    <id column="reply_id" jdbcType="INTEGER" property="replyId" />
-    <result column="reply_issue_id" jdbcType="INTEGER" property="replyIssueId" />
-    <result column="reply_reply_id" jdbcType="INTEGER" property="replyReplyId" />
-    <result column="reply_tips" jdbcType="VARCHAR" property="replyTips" />
-    <result column="reply_user_id" jdbcType="INTEGER" property="replyUserId" />
-    <result column="reply_time" jdbcType="TIMESTAMP" property="replyTime" />
-    <result column="reply_praise" jdbcType="INTEGER" property="replyPraise" />
-    <result column="reply_invalid" jdbcType="TINYINT" property="replyInvalid" />
-    <result column="reply_content" jdbcType="LONGVARCHAR" property="replyContent" />
-  </resultMap>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from seer_reply
-    where reply_id = #{replyId,jdbcType=INTEGER}
-  </delete>
-  <insert id="insert" parameterType="com.nf147.prophet.entity.Reply">
-    insert into seer_reply (reply_id, reply_issue_id, reply_reply_id, 
-      reply_tips, reply_user_id, reply_time, 
-      reply_praise, reply_invalid, reply_content
-      )
-    values (#{replyId,jdbcType=INTEGER}, #{replyIssueId,jdbcType=INTEGER}, #{replyReplyId,jdbcType=INTEGER}, 
-      #{replyTips,jdbcType=VARCHAR}, #{replyUserId,jdbcType=INTEGER}, #{replyTime,jdbcType=TIMESTAMP}, 
-      #{replyPraise,jdbcType=INTEGER}, #{replyInvalid,jdbcType=TINYINT}, #{replyContent,jdbcType=LONGVARCHAR}
-      )
-  </insert>
-  <update id="updateByPrimaryKey" parameterType="com.nf147.prophet.entity.Reply">
-    update seer_reply
-    set reply_issue_id = #{replyIssueId,jdbcType=INTEGER},
-      reply_reply_id = #{replyReplyId,jdbcType=INTEGER},
-      reply_tips = #{replyTips,jdbcType=VARCHAR},
-      reply_user_id = #{replyUserId,jdbcType=INTEGER},
-      reply_time = #{replyTime,jdbcType=TIMESTAMP},
-      reply_praise = #{replyPraise,jdbcType=INTEGER},
-      reply_invalid = #{replyInvalid,jdbcType=TINYINT},
-      reply_content = #{replyContent,jdbcType=LONGVARCHAR}
-    where reply_id = #{replyId,jdbcType=INTEGER}
-  </update>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select reply_id, reply_issue_id, reply_reply_id, reply_tips, reply_user_id, reply_time, 
-    reply_praise, reply_invalid, reply_content
-    from seer_reply
-    where reply_id = #{replyId,jdbcType=INTEGER}
-  </select>
-  <select id="selectAll" resultMap="BaseResultMap">
-    select reply_id, reply_issue_id, reply_reply_id, reply_tips, reply_user_id, reply_time, 
-    reply_praise, reply_invalid, reply_content
-    from seer_reply
-  </select>
+    <resultMap id="BaseResultMap" type="com.nf147.prophet.entity.Reply">
+        <id column="reply_id" jdbcType="INTEGER" property="replyId"/>
+        <result column="reply_issue_id" jdbcType="INTEGER" property="replyIssueId"/>
+        <result column="reply_reply_id" jdbcType="INTEGER" property="replyReplyId"/>
+        <result column="reply_tips" jdbcType="VARCHAR" property="replyTips"/>
+        <result column="reply_user_id" jdbcType="INTEGER" property="replyUserId"/>
+        <result column="reply_time" jdbcType="TIMESTAMP" property="replyTime"/>
+        <result column="reply_praise" jdbcType="INTEGER" property="replyPraise"/>
+        <result column="reply_invalid" jdbcType="TINYINT" property="replyInvalid"/>
+        <result column="reply_content" jdbcType="LONGVARCHAR" property="replyContent"/>
+        <result column="praiseNum" jdbcType="LONGVARCHAR" property="praiseNum"/>
+        <association property="userInfo" javaType="com.nf147.prophet.entity.User" autoMapping="true"/>
+    </resultMap>
+    <insert id="insertReply" parameterType="com.nf147.prophet.entity.Reply">
+        <selectKey resultType="java.lang.Integer" keyProperty="replyId" order="AFTER">
+            SELECT LAST_INSERT_ID() as replyId
+        </selectKey>
+        insert into seer_reply(reply_issue_id,reply_reply_id,reply_content,reply_user_id)
+        values (#{replyIssueId},#{replyReplyId},#{replyContent},#{replyUserId})
+    </insert>
+
+    <select id="getReplysByIssueId" resultMap="BaseResultMap">
+        select
+        r.* ,
+        (select count(*) from seer_reply_praise where praise_reply_id = r.reply_id) as praiseNum ,
+        u.*
+        from seer_reply r,seer_user u
+        where r.reply_user_id = u.user_id
+        and r.reply_issue_id = #{issueId}
+        and r.reply_invalid = 0
+        order by r.reply_praise DESC , r.reply_time DESC limit #{star},#{end}
+    </select>
+    <select id="getReplysByIssueIdCount" resultType="java.lang.Integer">
+        select count(*) from seer_reply where
+        reply_issue_id = #{issueId}
+        and reply_invalid = 0
+    </select>
+    <select id="getCount" resultType="java.lang.Integer">
+        select count(*) from seer_reply
+        where reply_issue_id = #{issueId} and reply_invalid = 0
+    </select>
+    <select id="getReplyReply" resultMap="BaseResultMap">
+        select
+        r.*,
+        (select count(*) from seer_reply_praise where praise_reply_id = r.reply_id) as praiseNum ,
+        u.* from seer_reply r, seer_user u
+        where
+        r.reply_user_id = u.user_id and
+        r.reply_invalid = 0 and
+        r.reply_reply_id = #{replyId} limit #{star},#{end}
+    </select>
+    <select id="getReplyReplyCount" resultType="java.lang.Integer">
+        select
+        count(*)
+        from seer_reply
+        where
+        reply_invalid = 0 and
+        reply_reply_id = #{replyId}
+    </select>
+
+
 </mapper>

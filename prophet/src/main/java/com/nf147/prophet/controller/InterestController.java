@@ -43,11 +43,17 @@ public class InterestController {
         return interestService.usersFollowInterestNumbers(interestId);
     }
 
-    //获取我关注的分类列表
-    @GetMapping("/follow/user")
+    //获取某个人的关注的分类列表
+    @GetMapping("/follow/user/{id}")
     @NeedLogin
-    public Result getUserFollow(HttpSession session) {
-        int userId = (int) session.getAttribute("userId");
+    public Result getUserFollow(@PathVariable("id") int userId) {
         return Result.status(true).code(200).body(interestService.getUserFollowInterest(userId));
+    }
+
+    //获取推荐关注的分类列表
+    @GetMapping("/follow/Recommend")
+    @NeedLogin
+    public Result getRecommend() {
+        return Result.status(true).code(200).body(interestService.getRecommendInterest());
     }
 }

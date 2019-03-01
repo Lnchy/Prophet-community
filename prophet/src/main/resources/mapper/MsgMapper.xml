@@ -5,34 +5,8 @@
     <id column="msg_id" jdbcType="INTEGER" property="msgId" />
     <result column="msg_user_from_id" jdbcType="INTEGER" property="msgUserFromId" />
     <result column="msg_user_accept_id" jdbcType="INTEGER" property="msgUserAcceptId" />
-    <result column="msg_time" jdbcType="INTEGER" property="msgTime" />
+    <result column="msg_create_time" jdbcType="DATE" property="msgTime" />
     <result column="msg_content" jdbcType="VARCHAR" property="msgContent" />
   </resultMap>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from seer_msg
-    where msg_id = #{msgId,jdbcType=INTEGER}
-  </delete>
-  <insert id="insert" parameterType="com.nf147.prophet.entity.Msg">
-    insert into seer_msg (msg_id, msg_user_from_id, msg_user_accept_id, 
-      msg_time, msg_content)
-    values (#{msgId,jdbcType=INTEGER}, #{msgUserFromId,jdbcType=INTEGER}, #{msgUserAcceptId,jdbcType=INTEGER}, 
-      #{msgTime,jdbcType=INTEGER}, #{msgContent,jdbcType=VARCHAR})
-  </insert>
-  <update id="updateByPrimaryKey" parameterType="com.nf147.prophet.entity.Msg">
-    update seer_msg
-    set msg_user_from_id = #{msgUserFromId,jdbcType=INTEGER},
-      msg_user_accept_id = #{msgUserAcceptId,jdbcType=INTEGER},
-      msg_time = #{msgTime,jdbcType=INTEGER},
-      msg_content = #{msgContent,jdbcType=VARCHAR}
-    where msg_id = #{msgId,jdbcType=INTEGER}
-  </update>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select msg_id, msg_user_from_id, msg_user_accept_id, msg_time, msg_content
-    from seer_msg
-    where msg_id = #{msgId,jdbcType=INTEGER}
-  </select>
-  <select id="selectAll" resultMap="BaseResultMap">
-    select msg_id, msg_user_from_id, msg_user_accept_id, msg_time, msg_content
-    from seer_msg
-  </select>
+
 </mapper>
