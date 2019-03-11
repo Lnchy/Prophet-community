@@ -1,7 +1,7 @@
 <template>
     <div id="app">
         <!-- 图钉 -->
-        <Affix style="margin-bottom:10px">
+        <Affix class="NavTopAffix">
             <Row type="flex" justify="center" class="NavigationBar">
                 <i-col span="17">
                     <Row type="flex" justify="start" align="middle">
@@ -165,11 +165,19 @@ export default {
     #app{
         font-size: 16px;
         background-color: #F6F6F6;
+        width:100%;
+    }
+    .NavTopAffix {
+        width: 100%;
+        margin-bottom:10px;
     }
     .NavigationBar{
         line-height: 3em;
         box-shadow: 2px 2px 3px #E8E8E8;
         background-color: white;
+        position: relative;
+        left: 0px;right: 0px;
+        top: 0px;
     }
     .NavigationBar a{
         color: #8590A6;

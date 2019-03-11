@@ -1,5 +1,7 @@
 package com.nf147.prophet.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.util.Date;
 
 public class Reply {
@@ -13,6 +15,7 @@ public class Reply {
 
     private Integer replyUserId;
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date replyTime;
 
     private Integer replyPraise;
@@ -20,8 +23,6 @@ public class Reply {
     private Byte replyInvalid;
 
     private String replyContent;
-
-    private int praiseNum;
 
     private User userInfo;
 
@@ -31,14 +32,6 @@ public class Reply {
 
     public void setUserInfo(User userInfo) {
         this.userInfo = userInfo;
-    }
-
-    public int getPraiseNum() {
-        return praiseNum;
-    }
-
-    public void setPraiseNum(int praiseNum) {
-        this.praiseNum = praiseNum;
     }
 
     public Integer getReplyId() {

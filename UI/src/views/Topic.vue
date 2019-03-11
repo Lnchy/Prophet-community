@@ -8,6 +8,59 @@
                     <i-col style="width:68%;">
                         <Row class="content">
                             <i-col>
+                                <Icon type="ios-apps-outline" size="25"/>话题广场
+                                <Divider/>
+
+                                <Row type="flex" justify="start">
+
+                                    <i-col
+                                    class="interestsItem"
+                                    span="12"
+                                    v-for="(item, index) in interestsAll"
+                                    :key="index">
+                                        <Row type="flex" justify="start">
+                                            <i-col span="4">
+                                                <Avatar shape="square" icon="ios-chatbubbles-outline" size="large" />
+                                            </i-col>
+                                            <i-col span="18" style="height:100px;overflow: hidden;">
+                                                <Row>
+                                                    <i-col span="12">
+                                                        <router-link
+                                                        :to="{
+                                                            name: 'interest',
+                                                            params: {
+                                                                'id': item.interestId
+                                                            }
+                                                        }">
+                                                            <h4>{{item.intersetName}}</h4>
+                                                        </router-link>
+                                                    </i-col>
+                                                    <i-col span="12" style="text-align:right">
+                                                        <Button 
+                                                        v-if="interests.find(inter => { if(inter.interestId==item.interestId) return true }) == null"
+                                                        type="text" @click="follow(item.interestId)">
+                                                            <Icon type="ios-add" /> 关注
+                                                        </Button>
+
+                                                        <Button type="text" @click="noFollow(item.intersetName, item.interestId)" v-else>
+                                                            取消关注
+                                                        </Button>
+                                                    </i-col>
+                                                </Row>
+                                                <span style="font-size:10px">
+                                                    {{item.intersetDescribe}}
+                                                </span>
+                                            </i-col>
+                                        </Row>
+                                        <div class="replyInfo-divider"></div>
+                                    </i-col>
+
+                                </Row>
+                            </i-col>
+                        </Row>
+
+                        <Row class="content">
+                            <i-col>
                                 <Icon type="ios-list" size="25"/>已关注列表
                                 <Divider/>
                                 <p v-if="interests == null || interests.length == 0">
@@ -85,6 +138,10 @@ export default {
             interests : [
                 
             ],
+            //话题广场所有分类
+            interestsAll:[
+
+            ],
             //推荐分类
             recommend : [
 
@@ -121,6 +178,8 @@ export default {
             this.getRecommend();
             //获取用户喜欢的问题
             this.getLikeIssue();
+            //获取话题广场的所有分类
+            this.getAllInterests();
         },
         getRecommend() { //获取推荐关注
             axios({
@@ -198,6 +257,17 @@ export default {
                 }
             })
             
+        },
+        getAllInterests() {     //获取所有分类
+            axios({
+                url: "/api/interest",
+                method: "get"
+            })
+            .then((resp) => {
+                if (resp.data.resultStatus) {
+                    this.interestsAll = resp.data.data;
+                }
+            })
         }
     }
 }
@@ -215,5 +285,11 @@ export default {
         padding: 1em;
         margin-bottom: 1em;
         height: auto;
+    }
+    .interestsItem {
+        color: black;
+    }
+    .interestsItem a {
+        color: black;
     }
 </style>

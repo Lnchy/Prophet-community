@@ -35,4 +35,7 @@ dependencies {
     testImplementation('org.springframework.boot:spring-boot-starter-test')
     //阿里云连接池
     compile group: 'com.alibaba', name: 'druid', version: '1.1.10'
+    //Gson
+    compile group: 'com.google.code.gson', name: 'gson', version: '2.8.5'
+
 }

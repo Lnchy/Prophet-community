@@ -56,4 +56,20 @@ public class InterestController {
     public Result getRecommend() {
         return Result.status(true).code(200).body(interestService.getRecommendInterest());
     }
+
+    //根据id来获取一个分类
+    @GetMapping("/info/{id}")
+    @NeedLogin
+    public Result getInfoById(@PathVariable("id") int id) {
+        return interestService.getInterestById(id);
+    }
+
+    //判断一个用户是否关注某个分类
+    @GetMapping("/isFollow/{id}")
+    @NeedLogin
+    public Result isFollow(@PathVariable("id") int interestId, HttpSession session) {
+        int userId = (int) session.getAttribute("userId");
+        boolean userIsFollowInterest = interestService.getUserIsFollowInterest(userId, interestId);
+        return Result.status(userIsFollowInterest).code(200);
+    }
 }

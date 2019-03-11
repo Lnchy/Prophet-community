@@ -1,6 +1,7 @@
 package com.nf147.prophet.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.Date;
 
@@ -28,6 +29,16 @@ public class Issue {
 
     private String issueContent;
 
+    private Reply reply;
+
+    public Reply getReply() {
+        return reply;
+    }
+
+    public void setReply(Reply reply) {
+        this.reply = reply;
+    }
+
     public Integer getIssueId() {
         return issueId;
     }
@@ -53,9 +64,6 @@ public class Issue {
     }
 
     public Integer getIssueUserId() {
-        if (issueAnonymous == 1) {
-            return null;
-        }
         return issueUserId;
     }
 
@@ -118,4 +126,5 @@ public class Issue {
     public void setIssueContent(String issueContent) {
         this.issueContent = issueContent == null ? null : issueContent.trim();
     }
+
 }

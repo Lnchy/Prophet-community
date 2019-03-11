@@ -11,7 +11,6 @@
         <result column="reply_praise" jdbcType="INTEGER" property="replyPraise"/>
         <result column="reply_invalid" jdbcType="TINYINT" property="replyInvalid"/>
         <result column="reply_content" jdbcType="LONGVARCHAR" property="replyContent"/>
-        <result column="praiseNum" jdbcType="LONGVARCHAR" property="praiseNum"/>
         <association property="userInfo" javaType="com.nf147.prophet.entity.User" autoMapping="true"/>
     </resultMap>
     <insert id="insertReply" parameterType="com.nf147.prophet.entity.Reply">
@@ -21,21 +20,28 @@
         insert into seer_reply(reply_issue_id,reply_reply_id,reply_content,reply_user_id)
         values (#{replyIssueId},#{replyReplyId},#{replyContent},#{replyUserId})
     </insert>
+    <update id="praiseAddOne">
+        update seer_reply set reply_praise = reply_praise + 1 where reply_id = #{replyId}
+    </update>
+    <update id="praiseNotOne">
+        update seer_reply set reply_praise = reply_praise - 1 where reply_id = #{replyId}
+    </update>
 
     <select id="getReplysByIssueId" resultMap="BaseResultMap">
         select
         r.* ,
-        (select count(*) from seer_reply_praise where praise_reply_id = r.reply_id) as praiseNum ,
         u.*
         from seer_reply r,seer_user u
         where r.reply_user_id = u.user_id
         and r.reply_issue_id = #{issueId}
+        and r.reply_reply_id is null
         and r.reply_invalid = 0
         order by r.reply_praise DESC , r.reply_time DESC limit #{star},#{end}
     </select>
     <select id="getReplysByIssueIdCount" resultType="java.lang.Integer">
         select count(*) from seer_reply where
         reply_issue_id = #{issueId}
+        and reply_reply_id is null
         and reply_invalid = 0
     </select>
     <select id="getCount" resultType="java.lang.Integer">
@@ -45,7 +51,6 @@
     <select id="getReplyReply" resultMap="BaseResultMap">
         select
         r.*,
-        (select count(*) from seer_reply_praise where praise_reply_id = r.reply_id) as praiseNum ,
         u.* from seer_reply r, seer_user u
         where
         r.reply_user_id = u.user_id and
@@ -57,8 +62,16 @@
         count(*)
         from seer_reply
         where
-        reply_invalid = 0 and
         reply_reply_id = #{replyId}
+    </select>
+
+    <select id="selectReplyByReplyId" resultMap="BaseResultMap">
+        select
+        r.* ,
+        u.*
+        from seer_reply r,seer_user u
+        where r.reply_user_id = u.user_id
+        and reply_id = #{replyId}
     </select>
 
 

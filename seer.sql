@@ -65,11 +65,14 @@ create table if Not exists `seer_interest_follow`	#用户关注问题类型列�
 create table if Not exists `seer_issue`			#用户提问表
 (
 	`issue_id` int primary key auto_increment,	#问题自增长ID
-	`issue_interest_id` int,							#问题类型ID
-	`issue_title` varchar(200),						#具体提出的问题
+	`issue_interest_id` int,							#问题所属分类ID
+	`issue_title` varchar(200),						#问题标题
 	`issue_user_id` int,									#提问者的id
+	`issue_content` text,								#问题补充
 	`issue_anonymous` tinyint DEFAULT 0,			#是否匿名，默认匿名为否
-	`issue_time` datetime DEFAULT NOW(),			#提出问题的时间
+	`issue_essence` tinyint DEFAULT 0,				#是否设置为精华，默认为否
+	`issue_ban` tinyint DEFAULT 0,					#是否禁止回答，默认为否
+	`issue_create_time` datetime DEFAULT NOW(),	#提出问题的时间
 	`issue_reply` int,									#提问的回复数量
 	`issue_views` int										#提问的浏览数
 );
@@ -78,7 +81,7 @@ create table if Not exists `seer_reply`			#回答列表
 (
 	`reply_id` int primary key auto_increment,	#回答自增长id
 	`reply_issue_id` int,								#回答所属问题的id
-	`reply_reply_id` int DEFAULT NULL,				#回复回答的id
+	`reply_reply_id` int DEFAULT NULL,				#回答的父ID
 	`reply_tips` varchar(200) DEFAULT NULL,		#官方辟谣
 	`reply_content` text,								#回答的内容
 	`reply_user_id` int,									#回答者的ID
@@ -113,7 +116,8 @@ create table if Not exists `seer_msg` #消息列表
 	`msg_id` int primary key auto_increment,	#消息自增长id
 	`msg_user_from_id` int,							#发送消息者id
 	`msg_user_accept_id` int,						#消息接受者id
-	`msg_time` int,									#消息类型id
+	`msg_create_time` datetime,					#消息发送时间
+	`msg_type_id` int,								#消息类型
 	`msg_content` varchar(200)						#消息内容
 );
 
@@ -125,29 +129,5 @@ create table if Not exists `seer_imgPath`	#图片储存表
 	
 );
 
-#行业分类
-insert into seer_industry(industry_name)
-values
-("互联网"),
-("机构组织"),
-("农林牧渔"),
-("医药卫生"),
-("建筑建材"),
-("冶金矿产"),
-("石油化工"),
-("水利水电"),
-("交通运输"),
-("信息产业"),
-("机械机电"),
-("轻工食品"),
-("服装纺织"),
-("专业服务"),
-("安全防护"),
-("环保绿化"),
-("旅游休闲"),
-("办公文教"),
-("电子电工"),
-("玩具礼品");
-
-#话题分类
-
+#角色信息
+insert into seer_role(name) values('user'),('admin');

@@ -84,26 +84,21 @@
                 <Row type="flex" justify="start">
                     <i-col style="width:69%;margin-top:1.5em;">
                         <Row>
-                            <i-col v-if="replyList.length > 0">
+                            <i-col class="Issue-content" style="margin-bottom:1em">
+                                <Row type="flex" justify="center">
+                                    <i-col>
+                                        <router-link :to="{name: 'issue', params:{'id':this.issueId}}">
+                                            查看全部 {{ issueReply }} 个回答
+                                        </router-link>
+                                    </i-col>
+                                </Row>
+                            </i-col>
+
+                            <i-col v-if="replyInfo != '' && replyInfo != null">
                                 <reply
                                 class="Issue-content"
-                                v-for="(item, index) in replyList" 
-                                :key="index" 
-                                :replyInfo="item"
+                                :replyInfo="replyInfo"
                                 :userInfo="userInfo"/>
-                            </i-col>
-
-                            <i-col class="Issue-content" v-else>
-                                没有回复，快抢沙发吧
-                            </i-col>
-
-                            <i-col class="Issue-content" style="margin:1em 0px;" v-if="replyList.length > 0">
-                                <!-- 切换页面 -->
-                                <Page 
-                                :current="pageHelp.pageCode" 
-                                :total="pageHelp.pageCount * 10" 
-                                @on-change="changePage"
-                                show-elevator />
                             </i-col>
                         </Row>
                     </i-col>
@@ -111,15 +106,38 @@
                     <i-col style="width:30%;margin-left:1%;margin-top:1.5em;">
                         <Row>
                             <i-col class="Issue-content">
-                                猜你喜欢
+                                关于作者
                                 <Divider />
+                                <Row type="flex" justify="start" align="middle">
+                                    <i-col offset="2">
+                                        <Avatar
+                                        :src="userPortraitUrl"
+                                        icon="ios-person" 
+                                        size="large" />
+                                    </i-col>
+                                    <i-col offset="1">
+                                        <h4>{{ userInfo.userName }}</h4>
+                                    </i-col>
+                                    <div class="replyInfo-divider"></div>
+                                    <i-col span="24">
+                                        <Row type="flex" justify="center" style="text-align: center">
+                                            <i-col>
+                                                回答<br>
+                                                <h3>309</h3>
+                                            </i-col>
 
-                                <i-col v-for="item in userLike" :key="item.issueId" style="margin-bottom:1em;">
-                                    <router-link
-                                    :to="{name: 'issue', params: {'id': item.issueId}}"> 
-                                        {{ item.issueTitle }} 
-                                    </router-link>
-                                </i-col>
+                                            <i-col offset="6">
+                                                提问<br>
+                                                <h3>30</h3>
+                                            </i-col>
+
+                                            <i-col offset="6">
+                                                点赞<br>
+                                                <h3>300</h3>
+                                            </i-col>
+                                        </Row>
+                                    </i-col>
+                                </Row>
                             </i-col>
                         </Row>
                     </i-col>
@@ -142,14 +160,12 @@ export default {
             openReply: false,
             //用户信息
             userInfo: "",
-            //用户喜欢
-            userLike: [],
-            //当前页
-            pageCode: 1,
-            //回答列表
-            replyList: [],
-            //翻页
-            pageHelp: "",
+            //回答
+            replyInfo: "",
+            //回答id
+            replyId: 0,
+            //用户头像
+            userPortraitUrl: "",
 
             issueId: 0,
             issueInterestId: 0,
@@ -167,10 +183,12 @@ export default {
     methods: {
         getTextContent(value) {     //获取富文本框的文本
             this.textValue = value;
+
             let fd = new FormData();
 
             fd.append("issueId", Number(this.issueId));
             fd.append("content", value);
+            //保存之后跳转
             axios({
                 url: "/api/reply/add",
                 method: "post",
@@ -197,93 +215,70 @@ export default {
         },
         getUserInfo(userInfo) {     //从组件里获得用户信息
             this.userInfo = userInfo;
-            
+            this.userPortraitUrl = "/api" + userInfo.userPortraitUrl;
         },
-        getUserLove() {     //获取用户喜欢
-            axios({
-                url: "/api/issue/like",
-                method: "get"
-            })
-            .then((resp) => {
-                if (resp.data.data != null) {
-                    this.userLike = resp.data.data;
-                } else {
-                    this.userLike = [];
-                }
-            })
-        },
-        getReplysList(issueId, pageCode) {  //获取回答
+        getReply(replyId) {  //获取回答
             axios({
                 method: "get",
-                url: "/api/reply/info/" + issueId + "/" + pageCode
+                url: "/api/reply/info/" + replyId
             })
             .then((resp) => {
                 if (resp.data.resultStatus) {
-                    if (resp.data != null) {
-                        this.replyList = resp.data.data.sort((a, b) => {
-                            return b.praiseNum - a.praiseNum;
-                        });
-                    }
+                    this.replyInfo = resp.data.data;
+                    //获取问题详情
+                    this.getIssueInfo(resp.data.data.replyIssueId);
 
-                    this.issueReply = resp.data.pageHelp.count;
-                    this.pageHelp = resp.data.pageHelp;
+                } else {
+                    //如果出现异常情况就直接提示并跳转
+                    this.$Message.error(resp.data.statusMsg);
+
+                    this.$router.push({
+                        name: 'topic'
+                    })
                 }
             })
         },
-        changePage(pageCode) {
-            this.$router.push({
-                name: 'issuePage',
-                params: {
-                    'id': this.issueId,
-                    'pageCode': pageCode
+        getIssueInfo(issueId) {     //获取问题详情
+            //获取问题详情
+            axios({
+                url: "/api/issue/info/" + issueId,
+                method: "get"
+            })
+            .then((resp) => {
+                if (resp.data.resultStatus) {
+                    this.issueId = resp.data.data.issueId;
+                    this.issueInterestId = resp.data.data.issueInterestId;
+                    this.issueTitle = resp.data.data.issueTitle;
+                    this.issueUserId = resp.data.data.issueUserId;
+                    this.issueAnonymous = resp.data.data.issueAnonymous;
+                    this.issueEssence = resp.data.data.issueEssence;
+                    this.issueBan = resp.data.data.issueBan;
+                    this.issueCreateTime = resp.data.data.issueCreateTime;
+                    this.issueReply = resp.data.data.issueReply;
+                    this.issueViews = resp.data.data.issueViews;
+                    this.issueContent = resp.data.data.issueContent;
+                } else {
+                    this.$router.push({
+                        path: "/"
+                    })
                 }
             })
+
         }
     },
     created() {
         //从url里获取数据并赋值
         if (!isNaN(Number(this.$route.params.id))) {
-            this.issueId = this.$route.params.id;
+            this.replyId = this.$route.params.id;
         } else {
             this.$router.push({
                 path: "/"
             })
         }
 
-        //获取页面
-        if (!isNaN(Number(this.$route.params.pageCode))) {
-            this.pageCode = this.$route.params.pageCode;
-        }
-
-        this.getReplysList(this.issueId, this.pageCode);
-
-
-        //获取问题详情
-        axios({
-            url: "/api/issue/info/" + this.issueId,
-            method: "get"
-        })
-        .then((resp) => {
-            if (resp.data.resultStatus) {
-                this.issueInterestId = resp.data.data.issueInterestId;
-                this.issueTitle = resp.data.data.issueTitle;
-                this.issueUserId = resp.data.data.issueUserId;
-                this.issueAnonymous = resp.data.data.issueAnonymous;
-                this.issueEssence = resp.data.data.issueEssence;
-                this.issueBan = resp.data.data.issueBan;
-                this.issueCreateTime = resp.data.data.issueCreateTime;
-                this.issueReply = resp.data.data.issueReply;
-                this.issueViews = resp.data.data.issueViews;
-                this.issueContent = resp.data.data.issueContent;
-            } else {
-                this.$router.push({
-                    path: "/"
-                })
-            }
-        })
-
-        //获取用户喜欢
-        this.getUserLove();
+        //获取回答详情和问题详情
+        this.getReply(this.replyId);
+       
     }
 }
 </script>

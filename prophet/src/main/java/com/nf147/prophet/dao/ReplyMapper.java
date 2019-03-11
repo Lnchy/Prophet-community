@@ -35,6 +35,13 @@ public interface ReplyMapper {
     int getCount(@Param("issueId") int issueId);
 
     /**
+     * 获取一条回答
+     * @param replyId   回答id
+     * @return          返回回答
+     */
+    Reply selectReplyByReplyId(@Param("replyId") int replyId);
+
+    /**
      * 获取回复的回复
      * @param replyId   回复id
      * @param star      开始条
@@ -60,4 +67,18 @@ public interface ReplyMapper {
      * @return
      */
     int insertReply(Reply reply);
+
+    /**
+     * 点赞加一
+     * @param replyId
+     * @return
+     */
+    int praiseAddOne(@Param("replyId") int replyId);
+
+    /**
+     * 点赞减一
+     * @param replyId
+     * @return
+     */
+    int praiseNotOne(@Param("replyId") int replyId);
 }

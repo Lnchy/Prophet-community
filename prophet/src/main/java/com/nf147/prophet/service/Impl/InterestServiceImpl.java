@@ -50,12 +50,6 @@ public class InterestServiceImpl implements InterestService {
         }
     }
 
-    //根据名称获取分类
-    @Override
-    public Result getInterestByName(String name) {
-        return null;
-    }
-
     //用户关注一个兴趣
     @Override
     public Result userFollowInterest(int userId, int interestId) {
@@ -168,5 +162,15 @@ public class InterestServiceImpl implements InterestService {
         return interestMapper.selectRand();
     }
 
-
+    //判断一个用户是否关注了某个分类
+    @Override
+    public boolean getUserIsFollowInterest(int userId, int interestId) {
+        List<Interest> list = getUserFollowInterest(userId);
+        for (Interest aList : list) {
+            if (aList.getInterestId() == interestId) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

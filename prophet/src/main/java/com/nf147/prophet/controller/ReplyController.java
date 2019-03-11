@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
-import java.util.List;
 
 @RestController
 @RequestMapping("/reply")
@@ -29,7 +28,7 @@ public class ReplyController {
         return userService.upLoadImage(ufile, userId);
     }
 
-    //获取回复列表
+    //获取回答列表
     @GetMapping("/info/{issueId}/{pageCode}")
     @NeedLogin
     public Result getReplyByIssue(@PathVariable("issueId") int issueId, @PathVariable("pageCode") int pageCode) {
@@ -39,6 +38,13 @@ public class ReplyController {
         }
 
         return result;
+    }
+
+    //获取一条回答
+    @GetMapping("/info/{replyId}")
+    @NeedLogin
+    public Result getReplyByReplyInfo(@PathVariable("replyId") int replyId) {
+        return replyService.getReplyByReplyId(replyId);
     }
 
     //获取回复的回复
@@ -56,6 +62,17 @@ public class ReplyController {
                            HttpSession session) {
         int userId = (int) session.getAttribute("userId");
         return replyService.addReply(issueId, content, userId);
+    }
+
+    //添加一条回答的回复
+    @PostMapping("/reply/add")
+    @NeedLogin
+    public Result addReplyReply(@RequestParam("issueId") int issueId,
+                                @RequestParam("content") String content,
+                                @RequestParam("replyId") int replyId,
+                                HttpSession session) {
+        int userId = (int) session.getAttribute("userId");
+        return replyService.addReplyReply(issueId, content, userId, replyId);
     }
 
 }

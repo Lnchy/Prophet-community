@@ -14,9 +14,6 @@ public interface InterestService {
     //根据Id获取分类
     Result getInterestById(int id);
 
-    //根据名称获取分类
-    Result getInterestByName(String name);
-
     //用户关注一个兴趣
     Result userFollowInterest(int userId, int InterestId);
 
@@ -49,4 +46,8 @@ public interface InterestService {
 
     //获取推荐的分类
     List<Interest> getRecommendInterest();
+
+    //判断某个用户是否关注了某个分类
+    boolean getUserIsFollowInterest(int userId, int interestId);
+
 }

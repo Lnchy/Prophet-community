@@ -5,10 +5,7 @@ import com.nf147.prophet.service.Impl.IssueServiceImpl;
 import com.nf147.prophet.util.Result;
 import com.nf147.prophet.util.validate.NeedLogin;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
@@ -30,6 +27,17 @@ public class IssueController {
         }
     }
 
+    //获取某个分类下的所有精彩回答
+    @GetMapping("/reply/{interestId}/{pageCode}")
+    @NeedLogin
+    public Result getReplyByInterestId(@PathVariable("interestId") int interestId, @PathVariable("pageCode") int pageCode) {
+        if (interestId > 0 && pageCode > 0) {
+            return issueService.getAllReplyByInterestId(interestId, 10, pageCode);
+        } else {
+            return Result.status(false).code(405).msg("请传入正确的页数和兴趣id");
+        }
+    }
+
     //获取用户喜欢的问题
     @GetMapping("/like")
     @NeedLogin
@@ -43,6 +51,7 @@ public class IssueController {
         }
     }
 
+    // 获取问题详情
     @GetMapping("/info/{id}")
     @NeedLogin
     public Result getIssueInfo(@PathVariable("id") int issueId) {
@@ -57,6 +66,19 @@ public class IssueController {
         } else {
             return Result.status(false).msg("请输入正确的问题ID");
         }
+    }
+
+    //新增一个问题
+    @PostMapping("/add")
+    @NeedLogin
+    public Result createIssue(
+            @RequestParam("issueInterestId") int issueInterestId,
+            @RequestParam("issueTitle") String issueTitle,
+            @RequestParam("issueContent") String issueContent,
+            HttpSession session) {
+        int userId = (int) session.getAttribute("userId");
+
+        return issueService.createNewIssue(issueInterestId, issueTitle, issueContent, userId);
     }
 
 }

@@ -3,6 +3,7 @@ import './plugins/axios'
 import App from './App.vue'
 import router from './router'
 import './plugins/iview.js'
+
 //全局顶部导航
 import Top from "./components/TopNav";
 //问题组件
@@ -20,6 +21,7 @@ Vue.use(Issue);
 Vue.use(MarkDown);
 Vue.use(Meditor);
 Vue.use(Reply);
+
 
 Vue.config.productionTip = false
 //跨域

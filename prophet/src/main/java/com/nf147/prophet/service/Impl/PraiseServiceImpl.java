@@ -1,5 +1,6 @@
 package com.nf147.prophet.service.Impl;
 
+import com.nf147.prophet.dao.ReplyMapper;
 import com.nf147.prophet.dao.ReplypraiseMapper;
 import com.nf147.prophet.entity.Replypraise;
 import com.nf147.prophet.service.PraiseService;
@@ -10,6 +11,9 @@ import org.springframework.stereotype.Service;
 public class PraiseServiceImpl implements PraiseService {
     @Autowired
     ReplypraiseMapper praiseMapper;
+
+    @Autowired
+    ReplyMapper replyMapper;
 
     /**
      * 点赞
@@ -24,6 +28,8 @@ public class PraiseServiceImpl implements PraiseService {
             Replypraise replypraise = new Replypraise();
             replypraise.setPraiseReplyId(replyId);
             replypraise.setPraiseUserId(userId);
+            //回复表中减一
+            replyMapper.praiseAddOne(replyId);
             return praiseMapper.insert(replypraise) > 0;
         } else {
             return true;
@@ -41,6 +47,8 @@ public class PraiseServiceImpl implements PraiseService {
     @Override
     public boolean cancelApproval(int replyId, int userId) {
         if (whetherAgreeWith(replyId,userId)) {
+            //回复表中加一
+            replyMapper.praiseNotOne(replyId);
             return praiseMapper.deletePraise(replyId, userId) > 0;
         } else {
             return true;

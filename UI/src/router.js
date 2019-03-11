@@ -10,6 +10,8 @@ import People from './views/People.vue' //个人主页
 import Admin from './views/admin/Admin.vue' //个人主页
 import Topic from './views/Topic.vue' //话题
 import issue from './views/issueInfo.vue' //问题详情
+import ReplyInfo from './views/ReplyInfo.vue'	//回答详情
+import Interest from './views/Interest.vue'		//兴趣分类
 
 Vue.use(Router)
 
@@ -23,6 +25,7 @@ const router = new Router({
 		{ path: '/people/:id/activities', name: 'people', meta: { title: "个人中心" }, component: People },
 		{ path: '/admin/', name: 'admin', meta: { title: "后台" }, component: Admin },
 		{ path: '/topic', name: 'topic', meta: { title: "话题广场" }, component: Topic },
+		{ path: '/Interest/:id', name: 'interest', meta: { title: "话题" }, component: Interest },
 		{
 			path: '/question/:id',
 			name: 'issue',
@@ -35,7 +38,13 @@ const router = new Router({
 					component: issue
 				}
 			]
-        },
+		},
+		{
+			path: '/ReplyInfo/:id',
+			name: 'replyInfo',
+			meta: { title: "回答详情" },
+			component: ReplyInfo,
+		},
 
         { path: '*', meta: { title: "找不到页面" }, component: notFont }
     ]

@@ -14,11 +14,67 @@
         <result column="issue_views" jdbcType="INTEGER" property="issueViews"/>
         <result column="issue_content" jdbcType="LONGVARCHAR" property="issueContent"/>
     </resultMap>
+    <resultMap id="issueReplyMap" type="com.nf147.prophet.entity.Issue">
+        <result column="issue_id" jdbcType="INTEGER" property="issueId"/>
+        <result column="issue_interest_id" jdbcType="INTEGER" property="issueInterestId"/>
+        <result column="issue_title" jdbcType="VARCHAR" property="issueTitle"/>
+        <result column="issue_user_id" jdbcType="INTEGER" property="issueUserId"/>
+        <result column="issue_anonymous" jdbcType="TINYINT" property="issueAnonymous"/>
+        <result column="issue_essence" jdbcType="TINYINT" property="issueEssence"/>
+        <result column="issue_ban" jdbcType="TINYINT" property="issueBan"/>
+        <result column="issue_create_time" jdbcType="TIMESTAMP" property="issueCreateTime"/>
+        <result column="issue_reply" jdbcType="INTEGER" property="issueReply"/>
+        <result column="issue_views" jdbcType="INTEGER" property="issueViews"/>
+        <result column="issue_content" jdbcType="LONGVARCHAR" property="issueContent"/>
+        <association property="reply" resultMap="replyMap" column="rid"/>
+    </resultMap>
+    <resultMap id="replyMap" type="com.nf147.prophet.entity.Reply">
+        <id column="rid" jdbcType="INTEGER" property="replyId"/>
+        <result column="reply_issue_id" jdbcType="INTEGER" property="replyIssueId"/>
+        <result column="reply_reply_id" jdbcType="INTEGER" property="replyReplyId"/>
+        <result column="reply_tips" jdbcType="VARCHAR" property="replyTips"/>
+        <result column="reply_user_id" jdbcType="INTEGER" property="replyUserId"/>
+        <result column="reply_time" jdbcType="TIMESTAMP" property="replyTime"/>
+        <result column="reply_praise" jdbcType="INTEGER" property="replyPraise"/>
+        <result column="reply_invalid" jdbcType="TINYINT" property="replyInvalid"/>
+        <result column="reply_content" jdbcType="LONGVARCHAR" property="replyContent"/>
+        <association property="userInfo" resultMap="userMap" column="uid"/>
+    </resultMap>
+    <resultMap id="userMap" type="com.nf147.prophet.entity.User">
+        <id column="uid" jdbcType="INTEGER" property="userId"/>
+        <result column="user_name" jdbcType="VARCHAR" property="userName"/>
+        <result column="user_pwd" jdbcType="CHAR" property="userPwd"/>
+        <result column="user_email" jdbcType="VARCHAR" property="userEmail"/>
+        <result column="user_birthday" jdbcType="DATE" property="userBirthday"/>
+        <result column="user_portrait_url" jdbcType="VARCHAR" property="userPortraitUrl"/>
+        <result column="user_background_img" jdbcType="VARCHAR" property="userBackgroundImg"/>
+    </resultMap>
+    <insert id="createIssue" parameterType="com.nf147.prophet.entity.Issue">
+        <selectKey resultType="java.lang.Integer" keyProperty="issueId" order="AFTER">
+            SELECT LAST_INSERT_ID() as issueId
+        </selectKey>
+        insert into seer_issue(issue_interest_id, issue_user_id, issue_title, issue_content, issue_reply, issue_views )
+        values( #{issueInterestId,jdbcType=INTEGER}, #{issueUserId,jdbcType=INTEGER}, #{issueTitle}, #{issueContent}, 0, 0);
+    </insert>
+
+    <update id="updateIssueReplyByIssueId">
+        update seer_issue set issue_reply = issue_reply + 1 where issue_id = #{issueId}
+    </update>
+    <update id="updateIssueReadNumByIssueId">
+        update seer_issue set issue_views = issue_views + 1 where issue_id = #{issueId}
+    </update>
     <select id="selectAllIssueByinterestId" resultType="com.nf147.prophet.entity.Issue">
-    select * from seer_issue
-    where issue_interest_id = #{interestId}
-    order by issue_views
-    DESC limit #{starNum},#{endNum}
+    select distinct i.*,r.reply_time from seer_issue i left join seer_reply r
+    on r.reply_issue_id = i.issue_id
+    where i.issue_interest_id = #{interestId}
+    and i.issue_ban = 0
+    order by
+    i.issue_create_time DESC,
+    r.reply_time DESC,
+    i.issue_essence DESC,
+    i.issue_reply DESC,
+	 i.issue_views DESC
+	 limit #{starNum},#{endNum}
   </select>
     <select id="getCount" resultType="java.lang.Integer">
     select count(*) from seer_issue
@@ -31,6 +87,54 @@
     </select>
     <select id="selectIssueByIssueId" resultType="com.nf147.prophet.entity.Issue">
         select * from seer_issue where issue_id = #{issueId}
+    </select>
+    <select id="selectAllReplyByInterestId" resultMap="issueReplyMap" useCache="false" flushCache="true">
+    select
+	 i.issue_id,
+	 i.issue_interest_id,
+	 i.issue_title,
+	 i.issue_user_id,
+	 case
+	 when isNull(r.reply_content)
+	 then i.issue_content
+	 else r.reply_content
+	 end as 'issue_content',
+	 i.issue_anonymous,
+	 i.issue_essence,
+	 i.issue_ban,
+	 i.issue_create_time,
+	 i.issue_reply,
+	 i.issue_views,
+
+	 r.reply_id as rid,
+	 r.reply_issue_id,
+	 r.reply_reply_id,
+	 r.reply_tips,
+	 r.reply_content,
+	 r.reply_user_id,
+	 r.reply_time,
+	 r.reply_praise,
+	 r.reply_invalid,
+
+	 u.user_id as uid,
+	 u.user_name,
+	 u.user_pwd,
+	 u.user_email,
+	 u.user_birthday,
+	 u.user_portrait_url,
+	 u.user_background_img
+	 from seer_issue i left join (seer_reply r left join seer_user u on u.user_id = r.reply_user_id)
+    on r.reply_issue_id = i.issue_id
+    where i.issue_interest_id = #{interestId}
+    and i.issue_ban = 0
+    and r.reply_reply_id is null
+    order by
+    i.issue_create_time DESC,
+    r.reply_time DESC,
+    i.issue_essence DESC,
+    i.issue_reply DESC,
+	 i.issue_views DESC
+	 limit #{starNum},#{endNum}
     </select>
 
 </mapper>
