@@ -11,7 +11,9 @@
                             <i-col>
                                 <Breadcrumb>
                                     <BreadcrumbItem to="/">首页</BreadcrumbItem>
-                                    <BreadcrumbItem to="/topic">话题</BreadcrumbItem>
+                                    <BreadcrumbItem>
+                                        <router-link :to="{name: 'interest', params:{'id':this.issueInterestId}}">话题</router-link>
+                                    </BreadcrumbItem>
                                     <BreadcrumbItem>问题</BreadcrumbItem>
                                 </Breadcrumb>
                             </i-col>

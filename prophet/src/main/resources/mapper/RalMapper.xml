@@ -6,6 +6,43 @@
     <result column="ral_reply_id" jdbcType="INTEGER" property="ralReplyId" />
     <result column="rel_date" jdbcType="TIMESTAMP" property="relDate" />
   </resultMap>
+
+  <resultMap id="issueReplyMap" type="com.nf147.prophet.entity.Issue">
+    <result column="issue_id" jdbcType="INTEGER" property="issueId"/>
+    <result column="issue_interest_id" jdbcType="INTEGER" property="issueInterestId"/>
+    <result column="issue_title" jdbcType="VARCHAR" property="issueTitle"/>
+    <result column="issue_user_id" jdbcType="INTEGER" property="issueUserId"/>
+    <result column="issue_anonymous" jdbcType="TINYINT" property="issueAnonymous"/>
+    <result column="issue_essence" jdbcType="TINYINT" property="issueEssence"/>
+    <result column="issue_ban" jdbcType="TINYINT" property="issueBan"/>
+    <result column="issue_create_time" jdbcType="TIMESTAMP" property="issueCreateTime"/>
+    <result column="issue_reply" jdbcType="INTEGER" property="issueReply"/>
+    <result column="issue_views" jdbcType="INTEGER" property="issueViews"/>
+    <result column="issue_content" jdbcType="LONGVARCHAR" property="issueContent"/>
+    <association property="reply" resultMap="replyMap" column="rid"/>
+  </resultMap>
+  <resultMap id="replyMap" type="com.nf147.prophet.entity.Reply">
+    <id column="rid" jdbcType="INTEGER" property="replyId"/>
+    <result column="reply_issue_id" jdbcType="INTEGER" property="replyIssueId"/>
+    <result column="reply_reply_id" jdbcType="INTEGER" property="replyReplyId"/>
+    <result column="reply_tips" jdbcType="VARCHAR" property="replyTips"/>
+    <result column="reply_user_id" jdbcType="INTEGER" property="replyUserId"/>
+    <result column="reply_time" jdbcType="TIMESTAMP" property="replyTime"/>
+    <result column="reply_praise" jdbcType="INTEGER" property="replyPraise"/>
+    <result column="reply_invalid" jdbcType="TINYINT" property="replyInvalid"/>
+    <result column="reply_content" jdbcType="LONGVARCHAR" property="replyContent"/>
+    <association property="userInfo" resultMap="userMap" column="uid"/>
+  </resultMap>
+  <resultMap id="userMap" type="com.nf147.prophet.entity.User">
+    <id column="uid" jdbcType="INTEGER" property="userId"/>
+    <result column="user_name" jdbcType="VARCHAR" property="userName"/>
+    <result column="user_pwd" jdbcType="CHAR" property="userPwd"/>
+    <result column="user_email" jdbcType="VARCHAR" property="userEmail"/>
+    <result column="user_birthday" jdbcType="DATE" property="userBirthday"/>
+    <result column="user_portrait_url" jdbcType="VARCHAR" property="userPortraitUrl"/>
+    <result column="user_background_img" jdbcType="VARCHAR" property="userBackgroundImg"/>
+  </resultMap>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from seer_ral
     where ral_id = #{ralId,jdbcType=INTEGER}
@@ -30,5 +67,51 @@
   <select id="selectAll" resultMap="BaseResultMap">
     select ral_id, ral_reply_id, rel_date
     from seer_ral
+  </select>
+
+  <select id="selectRalCount" resultType="java.lang.Integer">
+    select count(*) as count from seer_ral
+  </select>
+  <select id="selectIndex" resultMap="issueReplyMap">
+    select
+	 i.issue_id,
+	 i.issue_interest_id,
+	 i.issue_title,
+	 i.issue_user_id,
+	 case
+	 when isNull(r.reply_content)
+	 then i.issue_content
+	 else r.reply_content
+	 end as 'issue_content',
+	 i.issue_anonymous,
+	 i.issue_essence,
+	 i.issue_ban,
+	 i.issue_create_time,
+	 i.issue_reply,
+	 i.issue_views,
+
+	 r.reply_id as rid,
+	 r.reply_issue_id,
+	 r.reply_reply_id,
+	 r.reply_tips,
+	 r.reply_content,
+	 r.reply_user_id,
+	 r.reply_time,
+	 r.reply_praise,
+	 r.reply_invalid,
+
+	 u.user_id as uid,
+	 u.user_name,
+
+	 u.user_email,
+	 u.user_birthday,
+	 u.user_portrait_url,
+	 u.user_background_img
+	 from seer_issue i right join (seer_reply r left join seer_user u on u.user_id = r.reply_user_id)
+    on r.reply_issue_id = i.issue_id
+    where r.reply_id in((select ral_reply_id from seer_ral))
+    and i.issue_ban = 0
+    and r.reply_reply_id is null
+	 limit #{star},#{end}
   </select>
 </mapper>

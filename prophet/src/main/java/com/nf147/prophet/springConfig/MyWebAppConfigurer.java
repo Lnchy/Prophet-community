@@ -54,11 +54,10 @@ public class MyWebAppConfigurer extends WebMvcConfigurationSupport {
         registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
     }
 
-    //设置Gson为默认的Json转换器
-
-    @Override
-    protected void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        GsonHttpMessageConverter gsonHttpMessageConverter = new GsonHttpMessageConverter();
-        converters.add(gsonHttpMessageConverter);
-    }
+//    //设置Gson为默认的Json转换器
+//    @Override
+//    protected void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+//        GsonHttpMessageConverter gsonHttpMessageConverter = new GsonHttpMessageConverter();
+//        converters.add(gsonHttpMessageConverter);
+//    }
 }

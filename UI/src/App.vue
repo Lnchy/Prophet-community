@@ -15,6 +15,10 @@ export default {
 </script>
 
 <style>
+    #app {
+        font-size: 16px;
+        background-color: #F6F6F6;
+    }
     /* 分割线 */
     .replyInfo-divider {
         display: block;

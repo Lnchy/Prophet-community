@@ -13,10 +13,21 @@
             </span>
         </div>
         <div class="content" v-bind:class="{'open':open, 'close': !open}">
-            <router-link :to="{name: 'issue', params: {'id':issueInfo.issueId }}">
-            
-            <MarkDown :body="issueInfo.issueContent"></MarkDown>
+            <router-link v-if="issueInfo.reply == null" :to="{name: 'issue', params: {'id':issueInfo.issueId }}">
+                <MarkDown :body="issueInfo.issueContent"></MarkDown>
             </router-link>
+            
+            <router-link v-else :to="{name: 'replyInfo', params: {'id':issueInfo.reply.replyId }}">
+                <MarkDown :body="issueInfo.issueContent"></MarkDown>
+            </router-link>
+
+            <br>
+            <span v-if="issueInfo.reply != null" style="font-size:14px">
+                发布于：<Time :time="issueInfo.reply.replyTime" />
+            </span>
+            <span v-else style="font-size:14px">
+                发布于：<Time :time="issueInfo.issueCreateTime" />
+            </span>
             <div class="openButtom" @click="open = !open">
                 <span v-if="!open">
                     阅读全文<Icon type="ios-arrow-down" />

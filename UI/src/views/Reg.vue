@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        <canvas id="canvas"></canvas>
+        
         <div id="reg">
             <Row style="margin-bottom: 2em;">
                 <i-col><span style="color: #049BD2;font-size: 25px;">注册先知</span></i-col>
@@ -31,7 +31,7 @@
                         <Row>
                             <i-col :span="14">
                                 <Form-item label="密码">
-                                    <i-input v-model="regItems.userPwd" size="large" placeholder="请输入您的密码"></i-input>
+                                    <i-input type="password" v-model="regItems.userPwd" size="large" placeholder="请输入您的密码"></i-input>
                                 </Form-item>
                             </i-col>
                             <i-col :span="8" offset="2">
@@ -41,7 +41,7 @@
                         <Row>
                             <i-col :span="14">
                                 <Form-item label="确认密码">
-                                    <i-input v-model="userPwd2" size="large" placeholder="请重复输入密码确认"></i-input>
+                                    <i-input type="password" v-model="userPwd2" size="large" placeholder="请重复输入密码确认"></i-input>
                                 </Form-item>
                             </i-col>
                             <i-col :span="8" offset="2">
@@ -81,11 +81,11 @@
                 </i-col>
             </Row>
         </div>
-        <Affix :offset-bottom="0">
+        <!-- <Affix :offset-bottom="0">
             <div id="foot">
                 Copyright © 2018 先知社区 版权所有 Powered by Prophet community
             </div>
-        </Affix>
+        </Affix> -->
     </div>
 </template>
 
@@ -191,6 +191,14 @@ export default {
 </script>
 
 <style scoped>
+    #app {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        right: 0px;
+        bottom: 0px;
+        background: linear-gradient(to right top, #9c4dff, #42a7ff);
+    }
     #reg {
         width: 70em;
         padding: 3em 3em 1em 3em;
@@ -211,18 +219,5 @@ export default {
         padding: 1em 10%;
         font-size: 17px;
         z-index: 70;
-    }
-    canvas {
-        display: block;
-        vertical-align: top;
-        position: absolute;
-        top: 0px;
-        left: 0px;
-        right: 0px;
-        bottom: 0px;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(to right top, #9c4dff, #42a7ff);
-        z-index: -1;
     }
 </style>

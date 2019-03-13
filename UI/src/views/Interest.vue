@@ -95,8 +95,16 @@
 
                     <!-- 右边 -->
                     <i-col style="width:30%">
-                        <Row type="flex" justify="start">
+                        <Row type="flex" justify="start" class="interest-content">
+                            <i-col span="12" style="text-align:center">
+                                问题数<br><br>
+                                <h3>20</h3>
+                            </i-col>
 
+                            <i-col span="12" style="text-align:center">
+                                回答数<br><br>
+                                <h3>30</h3>
+                            </i-col>
                         </Row>
                     </i-col>
                 </Row>

@@ -1,5 +1,7 @@
 package com.nf147.prophet.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.util.Date;
 
 public class Ral {
